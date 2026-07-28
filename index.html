@@ -83,7 +83,7 @@
     <p class="tagline">Junior at Florida International University studying Cybersecurity, with 1.5+ years of call center and technical support experience and CompTIA A+ / Network+ / Security+ certifications. I troubleshoot hardware, software, and networks the same way I've supported customers — patiently, systematically, and until the problem's actually fixed.</p>
     <div class="links">
       <a class="btn primary" href="resume-helpdesk.pdf">Download Résumé</a>
-      <a class="btn" href="portfolio.docx">Full Project Portfolio (.docx)</a>
+      <a class="btn" href="portfolio.pdf">Full Project Portfolio (PDF)</a>
       <a class="btn" href="mailto:christianjalverio@gmail.com">Email Me</a>
     </div>
     <p style="margin-top:18px; font-size:13px; color: var(--muted);">Also looking at SOC analyst / cybersecurity roles? <a href="https://christianjalverio-del.github.io/">See my security-focused portfolio →</a></p>
@@ -171,7 +171,7 @@
     </ul>
 
     <h3>Network Topology</h3>
-    <figure class="shot"><img src="images/network-topology.png" alt="Network topology diagram"><figcaption>Full network topology — WAN gateway, pfSense firewall, home LAN, server rack, and WireGuard VPN with tiered peer access.</figcaption></figure>
+    <figure class="shot"><img src="network-topology.png" alt="Network topology diagram"><figcaption>Full network topology — WAN gateway, pfSense firewall, home LAN, server rack, and WireGuard VPN with tiered peer access.</figcaption></figure>
 
     <h3>Physical Build</h3>
     <p>The infrastructure runs on a compact wall-mounted 10-inch rack, built and wired from individual components — including the NETGEAR switch, HDD caddy, JetKVM for out-of-band access, and custom 3D-printed mounting brackets designed to fit the rack's non-standard dimensions. TrueNAS and Proxmox each run on their own dedicated mini PC, with the NAS drive's power and data cabling routed through a cutout added to the TrueNAS unit's case.</p>
@@ -179,34 +179,34 @@
 
     <h3>Network Security & Firewall (pfSense)</h3>
     <p>Configured and administer a pfSense firewall as the network's perimeter defense, managed through both the web GUI and direct SSH access. On the WAN side, firewall rules follow a least-privilege, default-deny model — inbound traffic is blocked by default except for two explicitly scoped allow rules (the WireGuard VPN and the Minecraft server), each locked to a single destination host and port. The LAN side is trusted, physically-controlled hardware and is intentionally left open internally, since access control for less-trusted traffic is enforced separately at the WireGuard interface rather than at the LAN rule set. Set up DHCP (Kea), DNS resolution, NTP, and system logging, and configured WAN-facing settings deliberately, including reasoning through bogon vs. private-network filtering trade-offs when they conflicted with legitimate internal testing traffic.</p>
-    <figure class="shot"><img src="images/shot_221733.jpg" alt="pfSense dashboard"><figcaption>pfSense dashboard showing system status and gateway health.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_221801.jpg" alt="pfSense firewall rules"><figcaption>pfSense LAN firewall rules — intentionally open internally, with access control enforced at the WireGuard layer.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_130757.jpg" alt="pfSense SSH"><figcaption>SSH access into pfSense for command-line administration.</figcaption></figure>
+    <figure class="shot"><img src="shot_221733.jpg" alt="pfSense dashboard"><figcaption>pfSense dashboard showing system status and gateway health.</figcaption></figure>
+    <figure class="shot"><img src="shot_221801.jpg" alt="pfSense firewall rules"><figcaption>pfSense LAN firewall rules — intentionally open internally, with access control enforced at the WireGuard layer.</figcaption></figure>
+    <figure class="shot"><img src="shot_130757.jpg" alt="pfSense SSH"><figcaption>SSH access into pfSense for command-line administration.</figcaption></figure>
 
     <h3>VPN Infrastructure (WireGuard)</h3>
     <p>Replaced a third-party mesh VPN with a fully self-hosted WireGuard deployment on pfSense, including port forwarding through a double-NAT ISP gateway. Designed a tiered access model using firewall aliases: my own devices receive full internal network access, while every other peer — family and friends I've onboarded so far — is restricted by default to a single internal host, enforced entirely at the firewall layer rather than by trusting client configuration. Generated and distributed per-peer keys and preshared keys for each device, and diagnosed a real-world NAT hairpin/reflection issue that was silently dropping same-network test traffic, tracing it back to a WAN interface bogon-filtering setting.</p>
-    <figure class="shot"><img src="images/shot_222602.jpg" alt="WireGuard settings"><figcaption>WireGuard VPN configuration on pfSense.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_222515.jpg" alt="WireGuard peers"><figcaption>WireGuard peer configuration — tiered access per peer.</figcaption></figure>
+    <figure class="shot"><img src="shot_222602.jpg" alt="WireGuard settings"><figcaption>WireGuard VPN configuration on pfSense.</figcaption></figure>
+    <figure class="shot"><img src="shot_222515.jpg" alt="WireGuard peers"><figcaption>WireGuard peer configuration — tiered access per peer.</figcaption></figure>
 
     <h3>Intrusion Detection & Prevention (Snort)</h3>
     <p>Deployed Snort as an active IDS/IPS on the WAN interface, in inline blocking mode rather than passive logging-only mode. Curated rule categories (Snort VRT/Subscriber, Emerging Threats Open, FEODO Tracker, GPLv2 Community, OpenAppID) balanced against the hardware's processing budget, and corrected a self-lockout risk in the block-target configuration before it could firewall off the router's own WAN address. The alert log shows Snort actively catching real inbound traffic, including a hit from Spamhaus's DROP list — a feed of networks known for hosting spam and malicious activity — confirming the rule set is working against live traffic, not just configured and idle. Built a lightweight shell script, scheduled via cron, that tails Snort's alert log and pushes new detections to a Telegram bot in real time.</p>
 
     <h3>Virtualization & Self-Hosted Services (Proxmox)</h3>
     <p>Built and manage a Proxmox VE host running a containerized services environment (Docker inside an LXC container, managed with Portainer and verified directly via the container CLI). Deployed and secured multiple self-hosted applications: Vaultwarden (password manager) behind a Caddy reverse proxy terminating TLS with an internally issued CA certificate — installed and trusted on client devices, and confirmed secure in the browser — and Uptime Kuma for service and endpoint monitoring with Telegram alerting. Scheduled automated Proxmox backups of the LXC container to TrueNAS over NFS, running on both a daily and weekly schedule with retention limits, and confirmed successful snapshot storage on the NAS side. Diagnosed and resolved a chain of real infrastructure issues along the way, including Docker's default directory permissions blocking a file share, NAT/port-forward misconfigurations, and container resource sizing.</p>
-    <figure class="shot"><img src="images/shot_221712.jpg" alt="Portainer"><figcaption>Portainer container list for Docker services running on Proxmox.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_230550.jpg" alt="Proxmox graphs"><figcaption>Proxmox host resource utilization (CPU/memory).</figcaption></figure>
-    <figure class="shot"><img src="images/shot_221030.jpg" alt="Cert CLI"><figcaption>Command-line generation of the self-signed internal CA and the Vaultwarden TLS certificate (openssl), run from the Proxmox LXC console.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_220727.jpg" alt="Caddyfile"><figcaption>Caddyfile configuration terminating TLS and reverse-proxying to Vaultwarden.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_224552.jpg" alt="Certificate dialog"><figcaption>Self-signed CA certificate installed and trusted on a client device.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_224607.jpg" alt="Vaultwarden"><figcaption>Vaultwarden self-hosted password manager.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_223044.jpg" alt="Uptime Kuma"><figcaption>Uptime Kuma status page — all monitored services operational.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_225708.jpg" alt="Port forwarding"><figcaption>Port forwarding for externally accessible services (Minecraft server).</figcaption></figure>
+    <figure class="shot"><img src="shot_221712.jpg" alt="Portainer"><figcaption>Portainer container list for Docker services running on Proxmox.</figcaption></figure>
+    <figure class="shot"><img src="shot_230550.jpg" alt="Proxmox graphs"><figcaption>Proxmox host resource utilization (CPU/memory).</figcaption></figure>
+    <figure class="shot"><img src="shot_221030.jpg" alt="Cert CLI"><figcaption>Command-line generation of the self-signed internal CA and the Vaultwarden TLS certificate (openssl), run from the Proxmox LXC console.</figcaption></figure>
+    <figure class="shot"><img src="shot_220727.jpg" alt="Caddyfile"><figcaption>Caddyfile configuration terminating TLS and reverse-proxying to Vaultwarden.</figcaption></figure>
+    <figure class="shot"><img src="shot_224552.jpg" alt="Certificate dialog"><figcaption>Self-signed CA certificate installed and trusted on a client device.</figcaption></figure>
+    <figure class="shot"><img src="shot_224607.jpg" alt="Vaultwarden"><figcaption>Vaultwarden self-hosted password manager.</figcaption></figure>
+    <figure class="shot"><img src="shot_223044.jpg" alt="Uptime Kuma"><figcaption>Uptime Kuma status page — all monitored services operational.</figcaption></figure>
+    <figure class="shot"><img src="shot_225708.jpg" alt="Port forwarding"><figcaption>Port forwarding for externally accessible services (Minecraft server).</figcaption></figure>
 
     <h3>Storage, Backup & Access Control (TrueNAS)</h3>
     <p>Administer a TrueNAS SCALE server providing network storage for personal files, media, and application data. Organized storage into multiple datasets with scoped permissions, configured SMB and NFS shares with host/network access restrictions, and set up UPS monitoring (NUT) with a properly configured monitor user after diagnosing an initial misconfiguration. Receives and stores the scheduled backups pushed from the Proxmox host over NFS, and runs a small set of self-hosted apps directly on the NAS.</p>
-    <figure class="shot"><img src="images/shot_222717.jpg" alt="TrueNAS dashboard"><figcaption>TrueNAS storage dashboard.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_222917.jpg" alt="TrueNAS shares"><figcaption>TrueNAS SMB/NFS share configuration with access controls.</figcaption></figure>
-    <figure class="shot"><img src="images/shot_222822.jpg" alt="TrueNAS apps"><figcaption>Installed applications on TrueNAS.</figcaption></figure>
+    <figure class="shot"><img src="shot_222717.jpg" alt="TrueNAS dashboard"><figcaption>TrueNAS storage dashboard.</figcaption></figure>
+    <figure class="shot"><img src="shot_222917.jpg" alt="TrueNAS shares"><figcaption>TrueNAS SMB/NFS share configuration with access controls.</figcaption></figure>
+    <figure class="shot"><img src="shot_222822.jpg" alt="TrueNAS apps"><figcaption>Installed applications on TrueNAS.</figcaption></figure>
 
   </div>
 </section>
@@ -255,8 +255,8 @@
   const grid = document.getElementById('photo-build');
   buildPhotos.forEach(([file, cap]) => {
     const fig = document.createElement('figure');
-    fig.innerHTML = `<img src="images/${file}" alt="${cap}" loading="lazy"><figcaption>${cap}</figcaption>`;
-    fig.querySelector('img').addEventListener('click', () => openLightbox(`images/${file}`));
+    fig.innerHTML = `<img src="${file}" alt="${cap}" loading="lazy"><figcaption>${cap}</figcaption>`;
+    fig.querySelector('img').addEventListener('click', () => openLightbox(`${file}`));
     grid.appendChild(fig);
   });
 
